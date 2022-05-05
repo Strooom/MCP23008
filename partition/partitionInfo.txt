@@ -1,0 +1,26 @@
+https://medium.com/the-esp-journal/how-to-use-custom-partition-tables-on-esp32-69c0f3fa89c8
+
+https://medium.com/@minatel
+
+
+SPIFFS : size = 0x130000 = 1.2 Mbyte -> ietwat te groot voor onze huidige noden.. maar kan waarschijnlijk niet OTA gewijzigd worden...
+NVS : size = 0x5000 = 20 Kbyte, in gebruik door AutoConnect..
+
+
+current for 4M layout
+# Name,   Type, SubType, Offset,  Size, Flags
+nvs,      data, nvs,     0x009000,   0x005000,
+otadata,  data, ota,     0x00e000,   0x002000,
+app0,     app,  ota_0,   0x010000,   0x160000,
+app1,     app,  ota_1,   0x170000,   0x160000,
+spiffs,   data, spiffs,  0x330000,   0x130000,
+
+
+New for 16M layout
+
+# Name,   Type, SubType, Offset,  Size, Flags
+nvs,      data,  nvs,     0x009000,  0x005000,
+otadata,  data,  ota,     0x00e000,  0x002000,
+app0,     app,   ota_0,   0x010000,  0x400000,
+app1,     app,   ota_1,   0x410000,  0x400000,
+spiffs,   data,  spiffs,  0x810000,  0x7F0000,
