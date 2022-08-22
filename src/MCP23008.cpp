@@ -1,4 +1,5 @@
 #include "MCP23008.h"
+
 #include <Wire.h>           // the device can interface I2C or SPI. This driver only does I2C, so we include the I2C library
 #include <Arduino.h>        // for definition of INPUT, OUTPUT, etc
 
@@ -7,7 +8,18 @@ MCP23008::MCP23008(uint8_t theI2Caddress) : I2Caddress(theI2Caddress) {
 
 void MCP23008::initialize() {
     Wire.begin();
-    // TODO : set all registers to powerOn default - So when the processor restarts, without a hardware reset, the registers are clean again
+    mcuCopyOfRegisters[static_cast<uint8_t>(registerAddress::IODIR)]   = 0xFF;
+    mcuCopyOfRegisters[static_cast<uint8_t>(registerAddress::IPOL)]    = 0x00;
+    mcuCopyOfRegisters[static_cast<uint8_t>(registerAddress::GPINTEN)] = 0x00;
+    mcuCopyOfRegisters[static_cast<uint8_t>(registerAddress::DEFVAL)]  = 0x00;
+    mcuCopyOfRegisters[static_cast<uint8_t>(registerAddress::INTCON)]  = 0x00;
+    mcuCopyOfRegisters[static_cast<uint8_t>(registerAddress::IOCON)]   = 0x00;
+    mcuCopyOfRegisters[static_cast<uint8_t>(registerAddress::GPPU)]    = 0x00;
+    mcuCopyOfRegisters[static_cast<uint8_t>(registerAddress::INTF)]    = 0x00;
+    mcuCopyOfRegisters[static_cast<uint8_t>(registerAddress::INTCAP)]  = 0x00;
+    mcuCopyOfRegisters[static_cast<uint8_t>(registerAddress::GPIO)]    = 0x00;
+    mcuCopyOfRegisters[static_cast<uint8_t>(registerAddress::OLAT)]    = 0x00;
+    refresh();
 }
 
 uint8_t MCP23008::readRegister(registerAddress theRegister) const {
@@ -18,11 +30,26 @@ uint8_t MCP23008::readRegister(registerAddress theRegister) const {
     return static_cast<uint8_t>(Wire.read());             // read 1 byte from I2C
 }
 
-void MCP23008::writeRegister(registerAddress theRegister, uint8_t theValue) {
+void MCP23008::writeHardwareRegister(registerAddress theRegister, uint8_t theValue) {
     Wire.beginTransmission(I2Caddress);                   // start an I2C communication to device with this address
     Wire.write(static_cast<uint8_t>(theRegister));        // write registerAddress to write
     Wire.write(theValue);                                 // then write value
     Wire.endTransmission();                               // ready
+}
+
+void MCP23008::writeRegister(registerAddress address, uint8_t value) {
+    mcuCopyOfRegisters[static_cast<uint8_t>(address)] = value;
+    writeHardwareRegister(address, value);
+}
+
+void MCP23008::refresh() {
+    for (uint8_t i = 0; i < nmbrOfRegisters; i++) {
+        writeHardwareRegister(static_cast<registerAddress>(i), mcuCopyOfRegisters[i]);
+    }
+}
+
+uint8_t MCP23008::getI2cAddress() const {
+    return I2Caddress;
 }
 
 // void MCP23008::pinMode(uint8_t pin, uint8_t theMode) {
