@@ -36,6 +36,7 @@ class MCP23008 {
 #endif
 
     void writeHardwareRegister(registerAddress address, uint8_t value);        // write a value to a register at address xx to the HW device
+    bool verify() const;                                                       // verifies if RAM copy of registers and hardware registers in MCP23008 match. Returns False if some bits got corrupt due to whatever HW problem
     uint8_t I2Caddress;                                                        // remembers the I2C address of each instance - default is 0x20
     uint8_t mcuCopyOfRegisters[nmbrOfRegisters];                               // RAM copies of all register values, so we can refresh the HW
 };
