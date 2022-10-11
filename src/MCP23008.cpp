@@ -120,7 +120,7 @@ void MCP23008::digitalWrite(uint8_t pin, uint8_t value) {
     }
 }
 
-uint8_t MCP23008::digitalRead(uint8_t pin) {
+uint8_t MCP23008::digitalRead(uint8_t pin) const {
     if (pin <= 7) {                                                       // we can only read pin 0 .. 7
         return (readRegister(registerAddress::GPIO) >> pin) & 0x1;        // read the register, shift the bits and mask-out everything else
     } else {

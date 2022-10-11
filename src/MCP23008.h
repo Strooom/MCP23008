@@ -9,7 +9,7 @@ class MCP23008 {
     uint8_t getI2cAddress() const;
     void pinMode(uint8_t pin, uint8_t theMode);           // Arduino-style configuration of each individual IO
     void digitalWrite(uint8_t pin, uint8_t value);        // Arduino-style writing of a HIGH or LOW to an individual IO
-    uint8_t digitalRead(uint8_t pin);                     // Arduino-style reading an individual IO
+    uint8_t digitalRead(uint8_t pin) const;               // Arduino-style reading an individual IO
 
     enum class registerAddress : uint8_t {        // definition of all the registers this device has
         IODIR   = 0x00,                           // I/O Direction
