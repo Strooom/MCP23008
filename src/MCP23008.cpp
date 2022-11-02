@@ -115,11 +115,11 @@ void MCP23008::pinMode(uint8_t pin, uint8_t theMode) {
 
 void MCP23008::digitalWrite(uint8_t pin, uint8_t value) {
     if (pin <= 7) {
-        uint8_t currentIOvalue = readRegister(registerAddress::GPIO);                      // read the current GPIO register
+        uint8_t currentIOvalue = readRegister(registerAddress::OLAT);                      // read the current GPIO-OUTPUT register = OLAT ! (reading GPIO reads the input pins)
         if (value == 1) {                                                                  //
-            writeRegister(registerAddress::GPIO, currentIOvalue | (1 << pin));             // set the corresponding bit to '1'
+            writeRegister(registerAddress::OLAT, currentIOvalue | (1 << pin));             // set the corresponding bit to '1'
         } else {                                                                           //
-            writeRegister(registerAddress::GPIO, (currentIOvalue & (~(1 << pin))));        // clear corresponding bit to '0'
+            writeRegister(registerAddress::OLAT, (currentIOvalue & (~(1 << pin))));        // clear corresponding bit to '0'
         }
     }
 }
