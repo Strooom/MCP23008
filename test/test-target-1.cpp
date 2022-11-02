@@ -26,6 +26,16 @@ void test_refresh() {
     TEST_ASSERT_EQUAL_UINT8(0xAA, ioExtender.readRegister(MCP23008::registerAddress::IPOL));
 }
 
+void test_refresh2() {
+    ioExtender.writeRegister(MCP23008::registerAddress::IPOL, 0xAA);
+    TEST_ASSERT_EQUAL_UINT8(0xAA, ioExtender.readRegister(MCP23008::registerAddress::IPOL));
+    ioExtender.writeHardwareRegister(MCP23008::registerAddress::IPOL, 0x55);
+    TEST_ASSERT_EQUAL_UINT8(0x55, ioExtender.readRegister(MCP23008::registerAddress::IPOL));
+    ioExtender.refresh(MCP23008::registerAddress::IPOL);
+    TEST_ASSERT_EQUAL_UINT8(0xAA, ioExtender.readRegister(MCP23008::registerAddress::IPOL));
+}
+
+
 void test_verify() {
     ioExtender.initialize();
     TEST_ASSERT_TRUE(ioExtender.verify());
@@ -64,6 +74,7 @@ void setup() {
     RUN_TEST(test_read_write_registers);
     RUN_TEST(test_getAddress);
     RUN_TEST(test_refresh);
+    RUN_TEST(test_refresh2);
     RUN_TEST(test_verify);
     RUN_TEST(test_pinmode);
     RUN_TEST(test_digitalWrite);

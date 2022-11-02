@@ -31,6 +31,7 @@ class MCP23008 {
     void writeRegister(registerAddress address, uint8_t value);        // write a value to a register. Writes to mcu copy first, then to matching register in HW
     bool verify() const;                                               // verifies if RAM copy of registers and hardware registers in MCP23008 match. Returns False if some bits got corrupt due to whatever HW problem
     void refresh();                                                    // refreshes all hardware registers from values in the MCU
+    void refresh(registerAddress address);                             // refreshes 1 hardware register from value in the MCU
 
 #ifndef unitTesting
   private:

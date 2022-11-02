@@ -60,6 +60,10 @@ void MCP23008::refresh() {
     }
 }
 
+void MCP23008::refresh(registerAddress address) {
+    writeHardwareRegister(address, mcuCopyOfRegisters[static_cast<int>(address)]);
+}
+
 uint8_t MCP23008::getI2cAddress() const {
     return I2Caddress;
 }
