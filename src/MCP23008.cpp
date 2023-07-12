@@ -3,7 +3,20 @@
 #include <Wire.h>           // the device can interface I2C or SPI. This driver only does I2C, so we include the I2C library
 #include <Arduino.h>        // for definition of INPUT, OUTPUT, etc
 
-MCP23008::MCP23008(uint8_t theI2Caddress) : I2Caddress(theI2Caddress) {
+void MCP23008::discoverI2cAddress(uint8_t startAddress) {
+    for (uint8_t candidateI2cAddress = startAddress; candidateI2cAddress <= 0x27; candidateI2cAddress++) {        // scan all possible I2C addresses for this device
+        Wire.beginTransmission(candidateI2cAddress);
+        if (Wire.endTransmission() == 0) {
+            I2Caddress = candidateI2cAddress;
+            return;
+        }
+    }
+    I2Caddress = 0;
+    return;
+}
+
+bool MCP23008::isPresent() const {
+    return (I2Caddress != 0);
 }
 
 void MCP23008::initialize() {
